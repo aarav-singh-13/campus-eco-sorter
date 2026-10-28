@@ -1,0 +1,20 @@
+{
+  "_note": "SAMPLE DATA. Names are campus landmarks but coordinates are APPROXIMATE placeholders and the accepted categories are guesses. Replace every entry with your own survey (walk to each bin, copy lat/lon from Google Maps by long-pressing the spot), then set verified: true.",
+  "bins": [
+    {"id": "MB-01", "name": "Main Building - front lawn", "area": "Academic", "lat": 29.8646, "lon": 77.8964, "accepts": ["plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "MB-02", "name": "Main Building - e-waste drop box", "area": "Academic", "lat": 29.86475, "lon": 77.8961, "accepts": ["ewaste"], "verified": false},
+    {"id": "LIB-01", "name": "Mahatma Gandhi Central Library entrance", "area": "Academic", "lat": 29.8656, "lon": 77.8952, "accepts": ["paper", "plastics", "landfill", "glass", "metal"], "verified": false},
+    {"id": "LHC-01", "name": "Lecture Hall Complex", "area": "Academic", "lat": 29.864, "lon": 77.8982, "accepts": ["plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "LHC-02", "name": "Lecture Hall Complex - battery box", "area": "Academic", "lat": 29.8639, "lon": 77.8984, "accepts": ["ewaste"], "verified": false},
+    {"id": "CSE-01", "name": "Computer Science dept. corridor", "area": "Academic", "lat": 29.8652, "lon": 77.893, "accepts": ["ewaste", "paper", "plastics", "glass", "metal"], "verified": false},
+    {"id": "CAN-01", "name": "Hostel canteen / food court", "area": "Food", "lat": 29.867, "lon": 77.895, "accepts": ["compost", "plastics", "landfill", "glass", "metal"], "verified": false},
+    {"id": "CAN-02", "name": "Cafe near Main Building", "area": "Food", "lat": 29.8642, "lon": 77.8952, "accepts": ["compost", "plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "RJB-01", "name": "Rajendra Bhawan mess", "area": "Hostels", "lat": 29.8685, "lon": 77.8975, "accepts": ["compost", "plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "CTB-01", "name": "Cautley Bhawan mess", "area": "Hostels", "lat": 29.869, "lon": 77.8935, "accepts": ["compost", "plastics", "landfill", "glass", "metal"], "verified": false},
+    {"id": "GVB-01", "name": "Govind Bhawan", "area": "Hostels", "lat": 29.8698, "lon": 77.896, "accepts": ["compost", "plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "KSB-01", "name": "Kasturba Bhawan", "area": "Hostels", "lat": 29.8625, "lon": 77.8995, "accepts": ["compost", "plastics", "paper", "landfill", "glass", "metal"], "verified": false},
+    {"id": "SAC-01", "name": "Student Activity Centre", "area": "Recreation", "lat": 29.8678, "lon": 77.8985, "accepts": ["plastics", "paper", "landfill", "ewaste", "glass", "metal"], "verified": false},
+    {"id": "SPT-01", "name": "Sports ground pavilion", "area": "Recreation", "lat": 29.8662, "lon": 77.9005, "accepts": ["plastics", "landfill"], "verified": false},
+    {"id": "CMP-01", "name": "Campus compost pit", "area": "Facilities", "lat": 29.8615, "lon": 77.894, "accepts": ["compost"], "verified": false}
+  ]
+}

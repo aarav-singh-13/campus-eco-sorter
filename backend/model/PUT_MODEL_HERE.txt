@@ -1,0 +1,2 @@
+Put your trained model here, e.g. mobilenetv3_waste.pth or mobilenetv3_waste.pt
+Then check backend/data/classes.json (see README).

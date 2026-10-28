@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+backend/.venv/
+.venv/
+
+# Created while the site runs - users' uploaded photos stay private
+backend/feedback/
+
+# Outputs
+training/results/
+*.zip
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# NOTE: the trained model in backend/model/ IS committed (~17 MB) so Render can serve it.

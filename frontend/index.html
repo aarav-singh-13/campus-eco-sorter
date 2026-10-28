@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Eco Sorter · IIT Roorkee</title>
+  <meta name="description" content="Snap a photo of your waste to find out which bin it goes in and where the nearest one is on the IIT Roorkee campus.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true">♻</span>
+        <span>Campus Eco Sorter</span>
+      </a>
+      <span class="campus-tag">IIT Roorkee</span>
+    </div>
+  </header>
+
+  <div id="demoBanner" class="demo-banner" hidden>
+    Demo mode: no trained model loaded yet, so predictions are placeholders. Put your model file in <code>backend/model/</code> and restart.
+  </div>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Not sure which bin?<br><em>Snap it.</em></h1>
+      <p>Upload a photo of the item. We'll tell you its waste category and show every bin on campus that takes it.</p>
+    </section>
+
+    <section class="grid">
+      <!-- Upload -->
+      <div class="card" id="uploadCard">
+        <h2 class="card-title"><span class="step">1</span> Photo of the item</h2>
+
+        <label id="dropZone" class="drop" for="fileInput">
+          <input id="fileInput" type="file" accept="image/*" hidden>
+          <img id="preview" alt="Preview of your photo" hidden>
+          <div id="dropText" class="drop-text">
+            <strong>Tap to take or choose a photo</strong>
+            <span>or drag an image here · JPG / PNG, up to 8 MB</span>
+          </div>
+        </label>
+
+        <div class="row">
+          <label class="check">
+            <input type="checkbox" id="useLocation">
+            Use my location to sort bins by distance
+          </label>
+        </div>
+
+        <button id="identifyBtn" class="btn primary" disabled>Identify waste</button>
+        <p id="scopeNote" class="note" hidden></p>
+        <p id="uploadError" class="error" role="alert" hidden></p>
+      </div>
+
+      <!-- Result -->
+      <div class="card" id="resultCard" aria-live="polite">
+        <h2 class="card-title"><span class="step">2</span> Result</h2>
+
+        <div id="resultEmpty" class="empty">Your result will appear here.</div>
+
+        <div id="resultBody" hidden>
+          <div class="verdict">
+            <span id="catBadge" class="badge"></span>
+            <div>
+              <div id="catName" class="cat-name"></div>
+              <div id="binLabel" class="bin-label"></div>
+            </div>
+          </div>
+
+          <div class="conf">
+            <div class="conf-row"><span>Confidence</span><span id="confText"></span></div>
+            <div class="bar"><div id="confBar" class="bar-fill"></div></div>
+          </div>
+
+          <div id="lowConf" class="warn" hidden>
+            <strong>Not fully sure.</strong> It could also be:
+            <div id="alternatives" class="alts"></div>
+            Try a clearer photo on a plain background, or pick the right one above.
+          </div>
+
+          <h3 class="sub">How to dispose</h3>
+          <ul id="tips" class="tips"></ul>
+
+          <details class="examples">
+            <summary>Common items in this category</summary>
+            <p id="examples"></p>
+          </details>
+
+          <div class="feedback">
+            <span>Was this correct?</span>
+            <button class="btn small" id="fbYes">Yes</button>
+            <select id="fbSelect" aria-label="Correct category">
+              <option value="">No, it's…</option>
+            </select>
+            <span id="fbThanks" class="thanks" hidden>Thanks, saved for retraining.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section class="card map-card">
+      <div class="map-head">
+        <h2 class="card-title"><span class="step">3</span> <span id="mapTitle">All bins on campus</span></h2>
+        <div id="filters" class="filters" role="group" aria-label="Filter bins by category"></div>
+      </div>
+      <div class="map-layout">
+        <div id="map" role="region" aria-label="Campus bin map"></div>
+        <ol id="binList" class="bin-list"></ol>
+      </div>
+      <p class="note">Bin locations are sample data until the campus survey is done. Unverified bins are marked.</p>
+    </section>
+  </main>
+
+  <footer class="foot wrap">
+    Community outreach project · Campus Eco &amp; Waste Sorting Identifier · IIT Roorkee
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

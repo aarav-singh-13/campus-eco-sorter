@@ -1,0 +1,12 @@
+{
+  "_note": "model_output_order MUST match the model's output neurons (the training notebook prints it). label_to_category maps each model label to a website category in categories.json; several labels can share one category.",
+  "model_output_order": ["cardboard", "glass", "metal", "paper", "plastic", "trash"],
+  "label_to_category": {
+    "cardboard": "paper",
+    "glass": "glass",
+    "metal": "metal",
+    "paper": "paper",
+    "plastic": "plastics",
+    "trash": "landfill"
+  }
+}
