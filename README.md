@@ -131,3 +131,17 @@ needed, just restart the server.
 Free plan notes: the site sleeps after 15 minutes without visitors and takes about a minute to wake up,
 so open it a minute before a demo. Photos saved via "Was this correct?" are lost when Render restarts
 (free plan has no permanent disk). Every `git push` redeploys automatically.
+
+## Deploying on Vercel (alternative to Render)
+
+`pyproject.toml` + `vercel.json` are already set up (entrypoint `backend.main:app`, CPU-only PyTorch,
+model and website files bundled).
+
+1. Push the latest code to GitHub (run `push_to_github.bat` again).
+2. On https://vercel.com sign in with GitHub → **Add New → Project** → import `campus-eco-sorter` → **Deploy**.
+   Leave Root Directory as the repo root and don't change the build settings.
+3. You get a link like `https://campus-eco-sorter.vercel.app`.
+
+If the build says the function is too large, add the environment variable
+`VERCEL_SUPPORT_LARGE_FUNCTIONS` = `1` (Settings → Environment Variables) and redeploy.
+Feedback photos are stored only temporarily on Vercel.

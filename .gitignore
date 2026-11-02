@@ -9,6 +9,7 @@ backend/feedback/
 
 # Outputs
 training/results/
+training/data/
 *.zip
 
 # Editors / OS

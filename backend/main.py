@@ -17,12 +17,17 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from bins import bins_for
-from model import WasteClassifier
+try:  # imported as the "backend" package (Vercel)
+    from .bins import bins_for
+    from .model import WasteClassifier
+except ImportError:  # run from inside backend/ (run.bat, Render)
+    from bins import bins_for
+    from model import WasteClassifier
 
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
-FEEDBACK_DIR = BASE_DIR / "feedback"
+# Vercel's file system is read-only except /tmp (feedback there is temporary)
+FEEDBACK_DIR = Path("/tmp/feedback") if os.getenv("VERCEL") else BASE_DIR / "feedback"
 CATEGORIES_FILE = BASE_DIR / "data" / "categories.json"
 
 CONF_THRESHOLD = float(os.getenv("CONF_THRESHOLD", "0.60"))
