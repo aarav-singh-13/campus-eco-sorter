@@ -135,15 +135,17 @@ so open it a minute before a demo. Photos saved via "Was this correct?" are lost
 
 ## Deploying on Vercel (alternative to Render)
 
-`vercel.json` defines two Vercel Services: `web` (the `frontend/` folder) and `api`
-(`backend/main.py`, with dependencies and CPU-only PyTorch in `backend/pyproject.toml`).
+PyTorch is too big for Vercel (~860 MB vs a 500 MB limit), so on Vercel the model runs as
+**ONNX** with `onnxruntime` (~60 MB). `vercel.json` defines two Vercel Services: `web` (the
+`frontend/` folder) and `api` (`backend/main.py`, dependencies in `backend/pyproject.toml`).
 Requests to `/api/...` go to the backend, everything else to the website.
 
-1. Push the latest code to GitHub (run `push_to_github.bat` again).
-2. On https://vercel.com sign in with GitHub → **Add New → Project** → import `campus-eco-sorter` → **Deploy**.
-   Leave Root Directory as the repo root.
-3. You get a link like `https://campus-eco-sorter.vercel.app`.
+1. Double-click `export_onnx.bat`. It creates `backend/model/mobilenetv3_waste.onnx` and checks
+   it gives the same predictions as the PyTorch model.
+2. Push to GitHub (`push_to_github.bat`).
+3. On https://vercel.com: **Add New → Project** → import `campus-eco-sorter` → **Deploy**
+   (or **Redeploy** an existing project). Leave Root Directory as the repo root.
+4. Check `https://<project>.vercel.app/api/health` → `"model_file": "mobilenetv3_waste.onnx"`.
 
-If the build says the function is too large, add the environment variable
-`VERCEL_SUPPORT_LARGE_FUNCTIONS` = `1` (Settings → Environment Variables) and redeploy.
+Locally and on Render the ONNX file is also used when `onnxruntime` is installed; otherwise PyTorch.
 Feedback photos are stored only temporarily on Vercel.

@@ -1,5 +1,7 @@
 # Dependencies for the Vercel "api" service (see ../vercel.json).
-# run.bat and Render use requirements-local.txt instead.
+# Runs the model with onnxruntime (~60 MB) instead of PyTorch (~860 MB, over Vercel's 500 MB limit).
+# Create backend/model/mobilenetv3_waste.onnx first with export_onnx.bat.
+# run.bat and Render use requirements-local.txt (PyTorch) instead.
 [project]
 name = "campus-eco-sorter-api"
 version = "1.0.0"
@@ -8,16 +10,6 @@ dependencies = [
     "fastapi>=0.110",
     "python-multipart>=0.0.9",
     "pillow>=10.0",
-    "torch>=2.6",
-    "torchvision>=0.21",
+    "numpy>=1.26",
+    "onnxruntime>=1.18",
 ]
-
-# Install the small CPU-only PyTorch build (no 2 GB of GPU libraries)
-[tool.uv.sources]
-torch = [{ index = "pytorch-cpu" }]
-torchvision = [{ index = "pytorch-cpu" }]
-
-[[tool.uv.index]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-explicit = true

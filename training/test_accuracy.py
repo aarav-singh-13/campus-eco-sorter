@@ -74,7 +74,7 @@ def main():
     _, _, test = split(samples)
     print(f"TrashNet images: {len(samples)}   test images: {len(test)}")
 
-    clf = WasteClassifier()
+    clf = WasteClassifier(backend="torch")
     if clf.demo:
         sys.exit(f"Model not loaded: {clf.load_error}")
     if clf.classes != CLASSES:

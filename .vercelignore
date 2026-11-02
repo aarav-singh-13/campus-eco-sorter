@@ -3,6 +3,10 @@ backend/.venv/
 backend/feedback/
 backend/requirements.txt
 backend/requirements-local.txt
+# Vercel uses the ONNX model; skip the PyTorch copies to keep the bundle small
+backend/model/mobilenetv3_waste/
+backend/model/*.pth
+backend/model/*.pt
 training/
 *.pptx
 *.bat

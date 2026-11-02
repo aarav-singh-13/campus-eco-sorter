@@ -1,12 +1,14 @@
 """
 Model loading and inference for the Campus Eco & Waste Sorting Identifier.
 
-Supports three kinds of saved model in backend/model/:
+Supports these kinds of saved model in backend/model/:
+  0. ONNX file (training/export_onnx.py)           -> mobilenetv3_waste.onnx
+     Used first when onnxruntime is installed. Needs no PyTorch, so it fits on Vercel.
   1. TorchScript file  (torch.jit.save)            -> e.g. mobilenetv3_waste.pt
   2. state_dict / checkpoint dict (torch.save)       -> e.g. mobilenetv3_waste.pth
   3. A whole pickled nn.Module (torch.save(model))  -> e.g. mobilenetv3_waste.pth
 
-If no model file is found (or torch isn't installed) the server runs in
+If no model file is found (or neither onnxruntime nor torch is installed) the server runs in
 DEMO MODE: it returns a repeatable fake prediction so the website can be
 built and tested before the trained weights are dropped in.
 """
@@ -39,8 +41,20 @@ try:
     from torchvision import transforms
 
     TORCH_AVAILABLE = True
-except ImportError:  # lets the website run in demo mode without torch
+except ImportError:  # Vercel runs without torch (ONNX), or demo mode
     TORCH_AVAILABLE = False
+
+try:
+    import numpy as np
+    import onnxruntime as ort
+
+    ONNX_AVAILABLE = True
+except ImportError:
+    ONNX_AVAILABLE = False
+
+ONNX_FILE = MODEL_DIR / "mobilenetv3_waste.onnx"
+# image shapes used by training/export_onnx.py to check preprocessing (portrait, landscape, square, odd)
+IMG_CHECK_SIZES = [(512, 384), (384, 512), (300, 300), (1001, 333), (257, 999)]
 
 
 def load_class_config():
@@ -73,6 +87,22 @@ def build_mobilenet(num_classes, arch=MODEL_ARCH):
     in_features = net.classifier[3].in_features
     net.classifier[3] = nn.Linear(in_features, num_classes)
     return net
+
+
+def preprocess_numpy(img):
+    """Same as build_transform() - Resize(256), CenterCrop(224), ToTensor, Normalize - without torch."""
+    w, h = img.size
+    if w <= h:
+        nw, nh = 256, int(256 * h / w)
+    else:
+        nw, nh = int(256 * w / h), 256
+    img = img.resize((nw, nh), Image.BILINEAR)
+    left = int(round((nw - 224) / 2.0))
+    top = int(round((nh - 224) / 2.0))
+    img = img.crop((left, top, left + 224, top + 224))
+    x = np.asarray(img, dtype=np.float32) / 255.0
+    x = (x - np.array(IMAGENET_MEAN, dtype=np.float32)) / np.array(IMAGENET_STD, dtype=np.float32)
+    return x.transpose(2, 0, 1)[None].astype(np.float32)
 
 
 def find_model_file():
@@ -109,17 +139,29 @@ def _strip_prefix(state_dict, prefix="module."):
 
 
 class WasteClassifier:
-    def __init__(self):
+    def __init__(self, backend="auto"):
+        """backend: "auto" (ONNX if available, else PyTorch) or "torch" (force PyTorch)."""
         self.classes, self.label_to_category = load_class_config()
         # Website categories the model can actually predict (e.g. no compost/e-waste with TrashNet only)
         self.categories = list(dict.fromkeys(self.label_to_category[l] for l in self.classes))
         self.model = None
+        self.session = None
         self.model_file = None
         self.demo = True
         self.load_error = None
 
+        if backend == "auto" and ONNX_AVAILABLE and ONNX_FILE.exists():
+            try:
+                self.session = ort.InferenceSession(str(ONNX_FILE), providers=["CPUExecutionProvider"])
+                self.input_name = self.session.get_inputs()[0].name
+                self.model_file = ONNX_FILE.name
+                self.demo = False
+                return
+            except Exception as exc:
+                self.load_error = f"Could not load {ONNX_FILE.name}: {exc}"
+
         if not TORCH_AVAILABLE:
-            self.load_error = "PyTorch is not installed - running in demo mode."
+            self.load_error = self.load_error or "No ONNX model/onnxruntime and no PyTorch - running in demo mode."
             return
 
         self.transform = build_transform()
@@ -176,6 +218,10 @@ class WasteClassifier:
 
         if self.demo:
             probs = self._demo_probs(image_bytes)
+        elif self.session is not None:
+            logits = self.session.run(None, {self.input_name: preprocess_numpy(img)})[0][0]
+            e = np.exp(logits - logits.max())
+            probs = (e / e.sum()).tolist()
         else:
             x = self.transform(img).unsqueeze(0)
             with torch.no_grad():

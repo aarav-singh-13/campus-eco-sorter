@@ -46,7 +46,7 @@ def main():
     ap.add_argument("--threshold", type=float, default=0.60, help="Low-confidence threshold to report")
     args = ap.parse_args()
 
-    clf = WasteClassifier()
+    clf = WasteClassifier(backend="torch")
     if clf.demo:
         sys.exit(f"Model not loaded: {clf.load_error}")
 
