@@ -31,7 +31,8 @@ campus-eco-sorter/
 │   │   └── bins.json        Campus bin locations  <-- REPLACE WITH SURVEY DATA
 │   ├── model/               Trained model (mobilenetv3_waste/, committed to git)
 │   ├── feedback/            User-corrected photos are saved here for retraining
-│   └── requirements.txt
+│   ├── requirements-local.txt   (run.bat / Render)
+│   └── pyproject.toml           (Vercel)
 ├── frontend/
 │   ├── index.html  style.css  app.js     Upload page + Leaflet/OpenStreetMap bin map
 ├── training/
@@ -50,7 +51,7 @@ campus-eco-sorter/
    cd backend
    python -m venv .venv
    .venv\Scripts\activate
-   pip install -r requirements.txt
+   pip install -r requirements-local.txt
    uvicorn main:app --reload --port 8000
    ```
 3. Open http://localhost:8000. API docs (to test endpoints by hand) are at http://localhost:8000/docs.
@@ -124,7 +125,7 @@ needed, just restart the server.
 
 1. Push this folder to a GitHub repository (the model folder is included; `.venv` and `feedback` are not).
 2. On https://render.com sign in with GitHub → **New → Blueprint** → pick the repo → **Apply**.
-   `render.yaml` tells Render everything: install `backend/requirements.txt` (CPU-only PyTorch),
+   `render.yaml` tells Render everything: install `backend/requirements-local.txt` (CPU-only PyTorch),
    start `uvicorn main:app`, and check `/api/health`.
 3. The first build takes ~5–10 minutes. You get a link like `https://campus-eco-sorter.onrender.com`.
 
@@ -134,12 +135,13 @@ so open it a minute before a demo. Photos saved via "Was this correct?" are lost
 
 ## Deploying on Vercel (alternative to Render)
 
-`pyproject.toml` + `vercel.json` are already set up (entrypoint `backend.main:app`, CPU-only PyTorch,
-model and website files bundled).
+`vercel.json` defines two Vercel Services: `web` (the `frontend/` folder) and `api`
+(`backend/main.py`, with dependencies and CPU-only PyTorch in `backend/pyproject.toml`).
+Requests to `/api/...` go to the backend, everything else to the website.
 
 1. Push the latest code to GitHub (run `push_to_github.bat` again).
 2. On https://vercel.com sign in with GitHub → **Add New → Project** → import `campus-eco-sorter` → **Deploy**.
-   Leave Root Directory as the repo root and don't change the build settings.
+   Leave Root Directory as the repo root.
 3. You get a link like `https://campus-eco-sorter.vercel.app`.
 
 If the build says the function is too large, add the environment variable

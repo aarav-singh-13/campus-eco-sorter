@@ -1,6 +1,8 @@
 # Not needed to run the website on Vercel
 backend/.venv/
 backend/feedback/
+backend/requirements.txt
+backend/requirements-local.txt
 training/
 *.pptx
 *.bat

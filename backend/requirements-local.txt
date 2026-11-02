@@ -1,0 +1,10 @@
+# Server packages only (training/evaluate extras are in training/requirements.txt).
+# The extra index gives the small CPU-only PyTorch build (~200 MB instead of ~2 GB with CUDA),
+# which is what fits on Render's free plan. Works on Windows too.
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+pillow>=10.0
+torch>=2.6
+torchvision>=0.21

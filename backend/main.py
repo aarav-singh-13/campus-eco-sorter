@@ -136,5 +136,7 @@ async def feedback(
     return {"saved": True}
 
 
-# Serve the website itself. Mounted last so /api/* routes take priority.
-app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+# Serve the website itself (local / Render). Mounted last so /api/* routes take priority.
+# On Vercel the website is its own service, so frontend/ isn't next to the backend.
+if FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

@@ -1,0 +1,23 @@
+# Dependencies for the Vercel "api" service (see ../vercel.json).
+# run.bat and Render use requirements-local.txt instead.
+[project]
+name = "campus-eco-sorter-api"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.110",
+    "python-multipart>=0.0.9",
+    "pillow>=10.0",
+    "torch>=2.6",
+    "torchvision>=0.21",
+]
+
+# Install the small CPU-only PyTorch build (no 2 GB of GPU libraries)
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
