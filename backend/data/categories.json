@@ -3,79 +3,156 @@
     "plastics": {
       "name": "Plastics",
       "color": "#2563eb",
-      "bin_label": "Blue bin - Dry recyclables (plastic)",
-      "examples": ["PET bottles", "chips & biscuit wrappers", "plastic cups", "milk pouches", "takeaway containers"],
+      "bin_label": "Blue bin · inorganic / dry waste",
+      "examples": [
+        "PET bottles",
+        "chips & biscuit wrappers",
+        "plastic cups",
+        "milk pouches",
+        "takeaway containers"
+      ],
       "tips": [
         "Empty and quickly rinse bottles and containers.",
         "Crush bottles to save space.",
         "Food-soiled plastic that can't be cleaned goes to Landfill."
-      ]
+      ],
+      "bin": "blue"
     },
     "paper": {
       "name": "Paper / Cardboard",
       "color": "#b45309",
-      "bin_label": "Blue bin - Dry recyclables (paper)",
-      "examples": ["notebooks & printouts", "newspaper", "cardboard boxes", "paper bags"],
+      "bin_label": "Blue bin · inorganic / dry waste",
+      "examples": [
+        "notebooks & printouts",
+        "newspaper",
+        "cardboard boxes",
+        "paper bags"
+      ],
       "tips": [
         "Keep it dry - wet or greasy paper can't be recycled.",
         "Flatten cardboard boxes.",
         "Paper cups and pizza boxes with grease usually go to Landfill."
-      ]
+      ],
+      "bin": "blue"
     },
     "glass": {
       "name": "Glass",
       "color": "#0d9488",
-      "bin_label": "Blue bin - Dry recyclables (glass)",
-      "examples": ["glass bottles", "jam & pickle jars", "glass cosmetic bottles"],
+      "bin_label": "Blue bin · inorganic / dry waste",
+      "examples": [
+        "glass bottles",
+        "jam & pickle jars",
+        "glass cosmetic bottles"
+      ],
       "tips": [
         "Empty and rinse bottles and jars.",
         "Remove metal caps and put them with Metal.",
         "Broken glass: wrap it in newspaper and label it before disposal."
-      ]
+      ],
+      "bin": "blue"
     },
     "metal": {
       "name": "Metal",
       "color": "#7c3aed",
-      "bin_label": "Blue bin - Dry recyclables (metal)",
-      "examples": ["soft-drink cans", "food tins", "bottle caps", "aluminium foil (clean)"],
+      "bin_label": "Blue bin · inorganic / dry waste",
+      "examples": [
+        "soft-drink cans",
+        "food tins",
+        "bottle caps",
+        "aluminium foil (clean)"
+      ],
       "tips": [
         "Empty and rinse cans and tins.",
         "Crush cans to save space.",
         "Spray cans and batteries are not regular metal; ask at the e-waste point."
-      ]
+      ],
+      "bin": "blue"
     },
     "compost": {
       "name": "Compost (Wet waste)",
       "color": "#15803d",
-      "bin_label": "Green bin - Wet / biodegradable",
-      "examples": ["leftover canteen food", "fruit & vegetable peels", "tea leaves", "eggshells", "leaves & flowers"],
+      "bin_label": "Green bin · organic / wet waste",
+      "examples": [
+        "leftover canteen food",
+        "fruit & vegetable peels",
+        "tea leaves",
+        "eggshells",
+        "leaves & flowers"
+      ],
       "tips": [
-        "Remove plastic packaging, foil and cutlery first.",
+        "Remove plastic packaging, foil and cutlery first; those go in the BLUE bin.",
         "Drain liquids before throwing.",
         "Leaf plates and used tissues can go here."
-      ]
+      ],
+      "bin": "green"
     },
     "ewaste": {
       "name": "E-Waste",
       "color": "#dc2626",
-      "bin_label": "E-waste collection point",
-      "examples": ["batteries", "chargers & cables", "earphones", "old phones", "broken mice/keyboards", "bulbs"],
+      "bin_label": "E-waste bin · batteries & electronics",
+      "examples": [
+        "batteries",
+        "chargers & cables",
+        "earphones",
+        "old phones",
+        "broken mice/keyboards",
+        "bulbs"
+      ],
       "tips": [
         "Never throw batteries in regular bins - they can cause fires.",
         "Tape the terminals of lithium batteries.",
         "Wipe personal data from phones and drives first."
-      ]
+      ],
+      "bin": "ewaste"
     },
     "landfill": {
       "name": "Landfill (Reject)",
       "color": "#475569",
-      "bin_label": "Black/grey bin - Reject waste",
-      "examples": ["multi-layer packets that are dirty", "sanitary waste (wrapped)", "broken ceramics", "styrofoam", "chewing gum"],
+      "bin_label": "Blue bin · inorganic / dry waste",
+      "examples": [
+        "multi-layer packets that are dirty",
+        "sanitary waste (wrapped)",
+        "broken ceramics",
+        "styrofoam",
+        "chewing gum"
+      ],
       "tips": [
-        "Use this only when an item fits no other category.",
-        "Wrap sanitary waste in paper before disposal.",
-        "Not sure? Clean recyclables are better than contaminated ones."
+        "Dry, non-recyclable items (dirty wrappers, styrofoam, broken ceramics) still go in the BLUE dry-waste bin.",
+        "Sanitary waste goes in the yellow sanitary bins at the girls' hostels, wrapped in paper.",
+        "Food-soiled items: scrape the food into the GREEN bin first."
+      ],
+      "bin": "blue"
+    }
+  },
+  "bin_types": {
+    "blue": {
+      "name": "Blue bin",
+      "label": "Inorganic / dry waste",
+      "color": "#1d4ed8"
+    },
+    "green": {
+      "name": "Green bin",
+      "label": "Organic / wet waste",
+      "color": "#15803d"
+    },
+    "ewaste": {
+      "name": "E-waste bin",
+      "label": "Batteries & electronics",
+      "color": "#dc2626"
+    },
+    "community": {
+      "name": "Large community bin",
+      "label": "1100 L collection bin",
+      "color": "#6b7280",
+      "accepts": [
+        "plastics",
+        "paper",
+        "glass",
+        "metal",
+        "landfill",
+        "compost"
       ]
     }
-  }
+  },
+  "_note": "Each category says which campus bin it goes in (IIT Roorkee two-bin system: green = organic/wet, blue = inorganic/dry, plus e-waste bins). bin_types lists the physical bins used in bins.json."
 }

@@ -29,16 +29,21 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const binLayer = L.layerGroup().addTo(map);
 let meMarker = null;
 
-function binColor(bin) {
-  // Colour by the currently filtered category if the bin takes it, otherwise its first category.
-  const cat = state.filter && bin.accepts.includes(state.filter) ? state.filter : bin.accepts[0];
-  return state.categories[cat]?.color || "#475569";
+// Bins at a location relevant to the current filter (all bins when no filter)
+function relevantBins(loc) {
+  return state.filter ? loc.bins.filter((x) => x.accepts.includes(state.filter)) : loc.bins;
 }
 
-// "Blue: Recyclable · Green: Non-recyclable" for bins that list their physical bins
-function binsText(b) {
-  if (!Array.isArray(b.bins) || !b.bins.length) return "";
-  return b.bins.map((x) => `${x.color[0].toUpperCase()}${x.color.slice(1)}: ${x.label}`).join(" · ");
+function binColor(loc) {
+  return (relevantBins(loc)[0] || loc.bins[0]).color;
+}
+
+// "Blue bin ✓ · Green bin" chips for the list / popup
+function binChips(loc) {
+  return loc.bins.map((x) => {
+    const dim = state.filter && !x.accepts.includes(state.filter) ? " dim" : "";
+    return `<span class="bin-chip${dim}" style="--c:${x.color}" title="${esc(x.label)}${x.verified ? " (verified: " + esc(x.source || "") + ")" : " (not yet checked)"}">${esc(x.name)}${x.verified ? " ✓" : ""}</span>`;
+  }).join("");
 }
 
 function formatDistance(m) {
@@ -61,12 +66,12 @@ function renderBins(bins) {
     const nearest = i === 0 && b.distance_m != null;
     const icon = L.divIcon({
       className: "",
-      html: `<div class="pin ${b.verified ? "" : "unverified"}" style="background:${binColor(b)}"></div>`,
+      html: `<div class="pin ${b.match_verified ? "" : "unverified"}" style="background:${binColor(b)}"></div>`,
       iconSize: [18, 18],
       iconAnchor: [9, 9],
     });
-    const accepts = b.accepts.map((c) => state.categories[c]?.name || c).join(", ");
-    const popup = `<strong>${esc(b.name)}</strong><br>${esc(accepts)}${b.distance_m != null ? `<br>${formatDistance(b.distance_m)} away` : ""}${binsText(b) ? `<br>${esc(binsText(b))}` : ""}${b.verified ? "<br><strong>✓ Verified on campus</strong>" : "<br><em>Sample location (bins not yet surveyed)</em>"}
+    const binLines = b.bins.map((x) => `${esc(x.name)} (${esc(x.label)}): ${x.verified ? "✓ verified – " + esc(x.source || "") : "not yet checked"}`).join("<br>");
+    const popup = `<strong>${esc(b.name)}</strong>${b.distance_m != null ? ` · ${formatDistance(b.distance_m)} away` : ""}<br>${binLines}
       <br><a href="https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}&travelmode=walking" target="_blank" rel="noopener">Walking directions</a>`;
     const marker = L.marker([b.lat, b.lon], { icon, title: b.name }).bindPopup(popup).addTo(binLayer);
     state.markers[b.id] = marker;
@@ -80,10 +85,9 @@ function renderBins(bins) {
         <span>${esc(b.area)}</span>
         ${b.distance_m != null ? `<span>${formatDistance(b.distance_m)}</span>` : ""}
         ${nearest ? `<span class="pill near">Nearest</span>` : ""}
-        ${b.verified ? `<span class="pill ok">✓ Verified</span>` : `<span class="pill">Sample</span>`}
-        ${binsText(b) ? `<span>${esc(binsText(b))}</span>` : ""}
+        ${b.match_verified ? `<span class="pill ok">✓ Verified</span>` : `<span class="pill">Not yet checked</span>`}
       </div>
-      <div class="bin-dots">${b.accepts.map((c) => `<span title="${esc(state.categories[c]?.name || c)}" style="background:${state.categories[c]?.color || "#999"}"></span>`).join("")}</div>`;
+      <div class="bin-chips">${binChips(b)}</div>`;
     const focus = () => { map.setView([b.lat, b.lon], 18); marker.openPopup(); };
     li.addEventListener("click", focus);
     li.addEventListener("keydown", (e) => { if (e.key === "Enter") focus(); });
@@ -204,6 +208,13 @@ function showCategory(catId, confidence) {
   $("catBadge").textContent = ICONS[catId] || "♻";
   $("catName").textContent = c.name;
   $("binLabel").textContent = c.bin_label;
+  const banner = $("binBanner");
+  const BIN = { blue: ["BLUE", "#1d4ed8", "inorganic / dry waste"], green: ["GREEN", "#15803d", "organic / wet waste"], ewaste: ["E-WASTE", "#dc2626", "batteries & electronics"] }[c.bin];
+  if (BIN) {
+    banner.innerHTML = `Put it in the <strong>${BIN[0]}</strong> bin<span>${BIN[2]}</span>`;
+    banner.style.background = BIN[1];
+    banner.hidden = false;
+  } else banner.hidden = true;
 
   const pct = Math.round(confidence * 100);
   $("confText").textContent = `${pct}%`;
