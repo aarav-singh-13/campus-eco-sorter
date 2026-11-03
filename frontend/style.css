@@ -120,6 +120,7 @@ body {
 .bin-dots span { width: 10px; height: 10px; border-radius: 50%; }
 .pill { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 99px; background: #ece7da; color: var(--muted); }
 .pill.near { background: var(--accent); color: #fff; }
+.pill.ok { background: #e3f1e8; color: var(--accent); }
 
 .note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
 .foot { color: var(--muted); font-size: 13px; padding: 28px 16px 40px; }

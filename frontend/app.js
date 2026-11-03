@@ -35,6 +35,12 @@ function binColor(bin) {
   return state.categories[cat]?.color || "#475569";
 }
 
+// "Blue: Recyclable · Green: Non-recyclable" for bins that list their physical bins
+function binsText(b) {
+  if (!Array.isArray(b.bins) || !b.bins.length) return "";
+  return b.bins.map((x) => `${x.color[0].toUpperCase()}${x.color.slice(1)}: ${x.label}`).join(" · ");
+}
+
 function formatDistance(m) {
   if (m == null) return "";
   return m < 1000 ? `${m} m` : `${(m / 1000).toFixed(1)} km`;
@@ -60,7 +66,7 @@ function renderBins(bins) {
       iconAnchor: [9, 9],
     });
     const accepts = b.accepts.map((c) => state.categories[c]?.name || c).join(", ");
-    const popup = `<strong>${esc(b.name)}</strong><br>${esc(accepts)}${b.distance_m != null ? `<br>${formatDistance(b.distance_m)} away` : ""}${b.verified ? "" : "<br><em>Unverified sample location</em>"}
+    const popup = `<strong>${esc(b.name)}</strong><br>${esc(accepts)}${b.distance_m != null ? `<br>${formatDistance(b.distance_m)} away` : ""}${binsText(b) ? `<br>${esc(binsText(b))}` : ""}${b.verified ? "<br><strong>✓ Verified on campus</strong>" : "<br><em>Sample location (bins not yet surveyed)</em>"}
       <br><a href="https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}&travelmode=walking" target="_blank" rel="noopener">Walking directions</a>`;
     const marker = L.marker([b.lat, b.lon], { icon, title: b.name }).bindPopup(popup).addTo(binLayer);
     state.markers[b.id] = marker;
@@ -74,7 +80,8 @@ function renderBins(bins) {
         <span>${esc(b.area)}</span>
         ${b.distance_m != null ? `<span>${formatDistance(b.distance_m)}</span>` : ""}
         ${nearest ? `<span class="pill near">Nearest</span>` : ""}
-        ${b.verified ? "" : `<span class="pill">Unverified</span>`}
+        ${b.verified ? `<span class="pill ok">✓ Verified</span>` : `<span class="pill">Sample</span>`}
+        ${binsText(b) ? `<span>${esc(binsText(b))}</span>` : ""}
       </div>
       <div class="bin-dots">${b.accepts.map((c) => `<span title="${esc(state.categories[c]?.name || c)}" style="background:${state.categories[c]?.color || "#999"}"></span>`).join("")}</div>`;
     const focus = () => { map.setView([b.lat, b.lon], 18); marker.openPopup(); };
