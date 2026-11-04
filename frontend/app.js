@@ -42,7 +42,7 @@ function binColor(loc) {
 function binChips(loc) {
   return loc.bins.map((x) => {
     const dim = state.filter && !x.accepts.includes(state.filter) ? " dim" : "";
-    return `<span class="bin-chip${dim}" style="--c:${x.color}" title="${esc(x.label)}${x.verified ? " (verified: " + esc(x.source || "") + ")" : " (not yet checked)"}">${esc(x.name)}${x.verified ? " ✓" : ""}</span>`;
+    return `<span class="bin-chip${dim}" style="--c:${x.color}" title="${esc(x.label)}${x.verified ? " (verified: " + esc(x.source || "") + ")" : " (not yet checked)"}">${esc(x.name)}${x.count > 1 ? " ×" + x.count : ""}${x.verified ? " ✓" : ""}</span>`;
   }).join("");
 }
 
@@ -70,7 +70,7 @@ function renderBins(bins) {
       iconSize: [18, 18],
       iconAnchor: [9, 9],
     });
-    const binLines = b.bins.map((x) => `${esc(x.name)} (${esc(x.label)}): ${x.verified ? "✓ verified – " + esc(x.source || "") : "not yet checked"}`).join("<br>");
+    const binLines = b.bins.map((x) => `${esc(x.name)}${x.count > 1 ? " ×" + x.count : ""} (${esc(x.label)}): ${x.verified ? "✓ verified – " + esc(x.source || "") : "not yet checked"}`).join("<br>");
     const popup = `<strong>${esc(b.name)}</strong>${b.distance_m != null ? ` · ${formatDistance(b.distance_m)} away` : ""}<br>${binLines}
       <br><a href="https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}&travelmode=walking" target="_blank" rel="noopener">Walking directions</a>`;
     const marker = L.marker([b.lat, b.lon], { icon, title: b.name }).bindPopup(popup).addTo(binLayer);
